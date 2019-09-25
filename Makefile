@@ -1,31 +1,26 @@
-default: prog
+default: all
 
 get-deps:
 	# Assuming Debian or Ubuntu here
 	sudo apt-get install -y build-essential check
 
-dictionary.o: dictionary.c
-	gcc -Wall -c dictionary.c dictionary.h
+dictionary.o: dictionary.c dictionary.h
+	gcc -Wall -c $^
 
 spell.o: spell.c
-	gcc -Wall -c spell.c
+	gcc -Wall -c $^
 
 test.o: test_main.c
-	gcc -Wall -c test_main.c
+	gcc -Wall -c $^
 
 main.o: main.c
-	gcc -Wall -c main.c
+	gcc -Wall -c $^
 
 test: dictionary.o spell.o test_main.o
-	gcc -Wall -o test_main test_main.o spell.o dictionary.o -lcheck -lm -lrt -lpthread -lsubunit
-	./test_main
+	gcc -Wall $^ -lcheck -lm -lrt -lpthread -lsubunit -o test
 
-prog: dictionary.o spell.o main.o
-	gcc -Wall -o spell_check dictionary.o spell.o main.o
+all: test
+	./test
 
 clean:
-	rm dictionary.o spell.o main.o test_main.o check_spell.o
-
-cleanall:clean
-	rm spell_check
-	
+	rm -f dictionary.o spell.o main.o test *.gch
