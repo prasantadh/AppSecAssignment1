@@ -10,8 +10,8 @@ dictionary.o: dictionary.c dictionary.h
 spell.o: spell.c
 	gcc -Wall -c $^
 
-test.o: test_main.c
-	gcc -Wall -c $^
+test_main.o: test_main.c
+	gcc -Wall -c $^ 
 
 main.o: main.c
 	gcc -Wall -c $^
@@ -23,4 +23,4 @@ all: test
 	./test
 
 clean:
-	rm -f dictionary.o spell.o main.o test *.gch
+	rm -f *.o test *.gch
