@@ -15,8 +15,29 @@ int check_words(FILE* fp, hashmap_t hashtable[], char* misspelled[]) {
     return 1;
 }
 
+// word should be sanitized by the time it gets here
 bool check_word(const char* word, hashmap_t hashtable[]) {
-   return false;
+    if (word == NULL || hashtable == NULL)      //sanity check
+        err_and_exit("empty params to check_word");
+    if (!word[0]) return false;
+    
+    // lowercase the word
+    char lcase_word[LENGTH+1] = {'\0'}; int i = 0;
+    while (word[i] != '\0') lcase_word[i] = tolower(word[i]), ++i;
+
+    int bucket = hash_function(lcase_word); // pick a bucket
+    node* cursor = hashtable[bucket];
+    if (cursor == NULL) return false;
+    else cursor = cursor->next;
+
+    while (cursor != NULL) {    // check the bucket
+        if (strncmp(lcase_word, cursor->word, LENGTH)) {
+            printf("%s %s\n", lcase_word, cursor->word);
+            return true;
+        }
+        cursor = cursor->next;
+    }
+    return false;
 }
 
 void add_word_to_table(char *word, hashmap_t* hashtable) {
