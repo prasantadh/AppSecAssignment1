@@ -26,7 +26,6 @@ bool getword(FILE* fp, char* word) {
         if (isspace(ch) && i == 0) continue;
         if (isspace(ch)) {
             word[i] = '\0'; i = 0;
-            // add_word_to_table(word, hashtable);
             return true;
         } else 
             word[i++] = tolower(ch);
@@ -38,14 +37,14 @@ void remove_surrounding_punctuation(char* word){
     int len = strlen(word);
     if (len == 0) return;
     int start = 0, finish = len; char ch;
-    while (start < len) { // browse to fist valid character
+    while (start < len) { /* browse to fist valid character*/
         ch = word[start];
         if ((ch >= 'A' && ch <= 'Z') || (ch >= 'a' && ch <= 'z'))
             break;
         ++start;
     }
     if (start == finish) return;
-    while(finish > start) { // browse to last valid character
+    while(finish > start) { /* browse to last valid character*/
         ch = word[finish - 1];
         if ((ch >= 'A' && ch <= 'Z') || (ch >= 'a' && ch <= 'z'))
             break;
@@ -61,8 +60,8 @@ int check_words(FILE* fp, hashmap_t hashtable[], char* misspelled[]) {
     char word[LENGTH+1] = {'\0'};
     while(getword(fp, word)) {
         remove_surrounding_punctuation(word);
-        if (!check_word(word, hashtable)) {
-            // printf("didn't find: %s\n", word);
+        if (!check_word(word, hashtable) && num_misspelled < MAX_MISSPELLED) {
+            /* printf("didn't find: %s\n", word); */
             strncpy(misspelled[num_misspelled], word, LENGTH+1);
             ++num_misspelled;
         }
@@ -70,23 +69,23 @@ int check_words(FILE* fp, hashmap_t hashtable[], char* misspelled[]) {
     return num_misspelled;
 }
 
-// word should be sanitized by the time it gets here
+/* word should be sanitized by the time it gets here */
 bool check_word(const char* word, hashmap_t hashtable[]) {
-    if (word == NULL || hashtable == NULL)      //sanity check
+    if (word == NULL || hashtable == NULL)      /* sanity check */
         err_and_exit("empty params to check_word");
     if (!word[0]) return false;
     
-    // lowercase the word
+    /* lowercase the word */
     char lcase_word[LENGTH+1] = {'\0'}; int i = 0;
     while (word[i] != '\0') lcase_word[i] = tolower(word[i]), ++i;
 
-    int bucket = hash_function(lcase_word); // pick a bucket
+    int bucket = hash_function(lcase_word); /* pick a bucket */
     node* cursor = hashtable[bucket];
     if (cursor == NULL) return false;
 
-    while (cursor != NULL) {    // check the bucket
+    while (cursor != NULL) {    /* check the bucket */
         if (!strncmp(lcase_word, cursor->word, LENGTH)) {
-            // printf("%s %s\n", lcase_word, cursor->word);
+            /* printf("%s %s\n", lcase_word, cursor->word); */
             return true;
         }
         cursor = cursor->next;
@@ -95,22 +94,22 @@ bool check_word(const char* word, hashmap_t hashtable[]) {
 }
 
 void add_word_to_table(char *word, hashmap_t* hashtable) {
-    if (word == NULL || hashtable == NULL)      //sanity check
+    if (word == NULL || hashtable == NULL)      /* sanity check */
         err_and_exit("empty param to add_word_to_hashtable");
-    // if (!strcmp(word, "to")) printf("------ got you\n");
+    /* if (!strcmp(word, "to")) printf("------ got you\n"); */
 
-    // memory allocation for new node
+    /* memory allocation for new node */
     node* node_p = (node*) malloc(sizeof(node));
     if (node_p == NULL)
         err_and_exit(strerror(errno));
 
-    // populate the new node
+    /* populate the new node */
     char ch; int i = 0;
     while ((ch = word[i]) != '\0')
         node_p->word[i++] = ch;
-    node_p->word[i] = '\0'; // proper termination
+    node_p->word[i] = '\0'; /* proper termination */
 
-    // insert new node into hashtable
+    /* insert new node into hashtable */
     int bucket = hash_function(word);
     node_p->next = hashtable[bucket];
     hashtable[bucket] = node_p;
@@ -122,18 +121,18 @@ bool load_dictionary(const char* dictionary_file, hashmap_t hashtable[]) {
     if (file_p == NULL)
         err_and_exit(strerror(errno));
     
-    // read and add word to dictionary
+    /* read and add word to dictionary */
     char ch; int i = 0; char word[LENGTH + 1] = {'\0'};
     while ((ch = fgetc(file_p)) != EOF) {
         if (isspace(ch) && i == 0) continue;
         if (isspace(ch)) {
             word[i] = '\0'; i = 0;
             add_word_to_table(word, hashtable);
-        } else 
+        } else
             word[i++] = tolower(ch);
+        if (i == LENGTH) break;
     }
 
-    // clean up
     if (fclose(file_p))
         err_and_exit(strerror(errno));
     return true;
