@@ -10,7 +10,6 @@ void err_and_exit(const char* err_msg) {
     fprintf(stderr, "error: %s\n", err_msg);
     exit(EXIT_FAILURE);
 }
-// void add_word_to_misspelled(char* word, char* misspelled
 
 void alloc_misspelled(char* misspelled[]) {
     char* mem_p = (char*) malloc(MAX_MISSPELLED * (LENGTH+1));
@@ -63,12 +62,11 @@ int check_words(FILE* fp, hashmap_t hashtable[], char* misspelled[]) {
     while(getword(fp, word)) {
         remove_surrounding_punctuation(word);
         if (!check_word(word, hashtable)) {
-            printf("didn't find: %s\n", word);
-            strncpy(word, misspelled[num_misspelled], LENGTH+1);
+            // printf("didn't find: %s\n", word);
+            strncpy(misspelled[num_misspelled], word, LENGTH+1);
             ++num_misspelled;
         }
     }
-    printf("num_misspelled: %d\n", num_misspelled);
     return num_misspelled;
 }
 
@@ -85,11 +83,10 @@ bool check_word(const char* word, hashmap_t hashtable[]) {
     int bucket = hash_function(lcase_word); // pick a bucket
     node* cursor = hashtable[bucket];
     if (cursor == NULL) return false;
-    else cursor = cursor->next;
 
     while (cursor != NULL) {    // check the bucket
         if (!strncmp(lcase_word, cursor->word, LENGTH)) {
-            printf("%s %s\n", lcase_word, cursor->word);
+            // printf("%s %s\n", lcase_word, cursor->word);
             return true;
         }
         cursor = cursor->next;
@@ -100,6 +97,7 @@ bool check_word(const char* word, hashmap_t hashtable[]) {
 void add_word_to_table(char *word, hashmap_t* hashtable) {
     if (word == NULL || hashtable == NULL)      //sanity check
         err_and_exit("empty param to add_word_to_hashtable");
+    // if (!strcmp(word, "to")) printf("------ got you\n");
 
     // memory allocation for new node
     node* node_p = (node*) malloc(sizeof(node));
