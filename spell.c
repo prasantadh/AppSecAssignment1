@@ -35,17 +35,40 @@ bool getword(FILE* fp, char* word) {
     return false;
 } 
 
+void remove_surrounding_punctuation(char* word){
+    int len = strlen(word);
+    if (len == 0) return;
+    int start = 0, finish = len; char ch;
+    while (start < len) { // browse to fist valid character
+        ch = word[start];
+        if ((ch >= 'A' && ch <= 'Z') || (ch >= 'a' && ch <= 'z'))
+            break;
+        ++start;
+    }
+    if (start == finish) return;
+    while(finish > start) { // browse to last valid character
+        ch = word[finish - 1];
+        if ((ch >= 'A' && ch <= 'Z') || (ch >= 'a' && ch <= 'z'))
+            break;
+        --finish;
+    }
+    strncpy(word, word+start, finish - start);
+    word[finish] = '\0';
+}
+
 int check_words(FILE* fp, hashmap_t hashtable[], char* misspelled[]) {
     alloc_misspelled(misspelled);
     int num_misspelled = 0;
     char word[LENGTH+1] = {'\0'};
     while(getword(fp, word)) {
+        remove_surrounding_punctuation(word);
         if (!check_word(word, hashtable)) {
             printf("didn't find: %s\n", word);
             strncpy(word, misspelled[num_misspelled], LENGTH+1);
             ++num_misspelled;
         }
     }
+    printf("num_misspelled: %d\n", num_misspelled);
     return num_misspelled;
 }
 
