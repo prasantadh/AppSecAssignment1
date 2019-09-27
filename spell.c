@@ -10,9 +10,43 @@ void err_and_exit(const char* err_msg) {
     fprintf(stderr, "error: %s\n", err_msg);
     exit(EXIT_FAILURE);
 }
+// void add_word_to_misspelled(char* word, char* misspelled
+
+void alloc_misspelled(char* misspelled[]) {
+    char* mem_p = (char*) malloc(MAX_MISSPELLED * (LENGTH+1));
+    if (mem_p == NULL)
+        err_and_exit(strerror(errno));
+    for(int i = 0; i < MAX_MISSPELLED; ++i) {
+        misspelled[i] = (char *) (mem_p + (LENGTH+1) * i);
+    }
+}
+
+bool getword(FILE* fp, char* word) {
+    char ch; int i = 0;
+    while ((ch = fgetc(fp)) != EOF) {
+        if (isspace(ch) && i == 0) continue;
+        if (isspace(ch)) {
+            word[i] = '\0'; i = 0;
+            // add_word_to_table(word, hashtable);
+            return true;
+        } else 
+            word[i++] = tolower(ch);
+    }
+    return false;
+} 
 
 int check_words(FILE* fp, hashmap_t hashtable[], char* misspelled[]) {
-    return 1;
+    alloc_misspelled(misspelled);
+    int num_misspelled = 0;
+    char word[LENGTH+1] = {'\0'};
+    while(getword(fp, word)) {
+        if (!check_word(word, hashtable)) {
+            printf("didn't find: %s\n", word);
+            strncpy(word, misspelled[num_misspelled], LENGTH+1);
+            ++num_misspelled;
+        }
+    }
+    return num_misspelled;
 }
 
 // word should be sanitized by the time it gets here
@@ -31,7 +65,7 @@ bool check_word(const char* word, hashmap_t hashtable[]) {
     else cursor = cursor->next;
 
     while (cursor != NULL) {    // check the bucket
-        if (strncmp(lcase_word, cursor->word, LENGTH)) {
+        if (!strncmp(lcase_word, cursor->word, LENGTH)) {
             printf("%s %s\n", lcase_word, cursor->word);
             return true;
         }
