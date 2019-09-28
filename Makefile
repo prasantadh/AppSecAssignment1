@@ -19,8 +19,12 @@ main.o: main.c
 test: dictionary.o spell.o test_main.o
 	gcc -Wall $^ -lcheck -lm -lrt -lpthread -lsubunit -o test
 
-all: test
+main: dictionary.o spell.o main.o
+	gcc -Wall $^ -lcheck -lm -lrt -lpthread -lsubunit -o main
+
+all: test main
 	./test
+	./main
 
 clean:
-	rm -f *.o test *.gch
+	rm -f *.o test *.gch main

@@ -25,10 +25,13 @@ bool getword(FILE* fp, char* word) {
     while ((ch = fgetc(fp)) != EOF) {
         if (isspace(ch) && i == 0) continue;
         if (isspace(ch)) {
-            word[i] = '\0'; i = 0;
+            word[i] = '\0';
             return true;
-        } else 
+        } else {
+            if (i == LENGTH + 1) continue;
             word[i++] = tolower(ch);
+            // if (i == LENGTH + 1) return true;
+        }
     }
     return false;
 } 
@@ -59,6 +62,7 @@ int check_words(FILE* fp, hashmap_t hashtable[], char* misspelled[]) {
     int num_misspelled = 0;
     char word[LENGTH+1] = {'\0'};
     while(getword(fp, word)) {
+        // fprintf(stderr, "hello hello: %s\n", word);
         remove_surrounding_punctuation(word);
         if (!check_word(word, hashtable) && num_misspelled < MAX_MISSPELLED) {
             /* printf("didn't find: %s\n", word); */
@@ -77,7 +81,8 @@ bool check_word(const char* word, hashmap_t hashtable[]) {
     
     /* lowercase the word */
     char lcase_word[LENGTH+1] = {'\0'}; int i = 0;
-    while (word[i] != '\0') lcase_word[i] = tolower(word[i]), ++i;
+    while (i <= LENGTH && word[i] != '\0') 
+        lcase_word[i] = tolower(word[i]), ++i;
 
     int bucket = hash_function(lcase_word); /* pick a bucket */
     node* cursor = hashtable[bucket];
