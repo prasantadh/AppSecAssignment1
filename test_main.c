@@ -23,7 +23,14 @@ START_TEST(test_check_word_normal)
     const char* punctuation_word_2 = "pl.ace";
     ck_assert(check_word(correct_word, hashtable));
     ck_assert(!check_word(punctuation_word_2, hashtable));
+    // all digits is still a word
+    ck_assert(check_word("12345", hashtable));
+    // do not crash on accent marks 
+    ck_assert(!check_word("aquí", hashtable));
     // Test here: What if a word begins and ends with "?
+    /* this cannot be tested here because the parameter provided
+     * is `const char *word` to check_word and removal of
+     * punctuation is in the check_words */
 }
 END_TEST
 
@@ -46,6 +53,7 @@ START_TEST(test_check_words_normal)
     ck_assert_msg(strcmp(misspelled[0], expected[0]) == 0);
     ck_assert_msg(strcmp(misspelled[1], expected[1]) == 0);
     ck_assert_msg(strcmp(misspelled[2], expected[2]) == 0);
+
 }
 END_TEST
 
@@ -58,6 +66,7 @@ check_word_suite(void)
     check_word_case = tcase_create("Core");
     tcase_add_test(check_word_case, test_check_word_normal);
     tcase_add_test(check_word_case, test_check_words_normal);
+    tcase_add_test(check_word_case, test_dictionary_normal);
     suite_add_tcase(suite, check_word_case);
 
     return suite;
