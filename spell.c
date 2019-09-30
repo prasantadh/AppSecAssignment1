@@ -74,12 +74,26 @@ int check_words(FILE* fp, hashmap_t hashtable[], char* misspelled[]) {
     return num_misspelled;
 }
 
+bool is_all_digits(const char* word) {
+    int i = 0;
+    while(word[i]) {
+        if (word[i] < '0' || word[i] > '9')
+            return false;
+        ++i;
+    }
+    return true;
+}
+
+
 /* word should be sanitized by the time it gets here */
 bool check_word(const char* word, hashmap_t hashtable[]) {
     if (word == NULL || hashtable == NULL)      /* sanity check */
         err_and_exit("empty params to check_word");
     if (!word[0]) return false;
     // fprintf(stderr,"checking: %s:\t", word);
+
+    // return all digits as a word
+    if (is_all_digits(word)) return true;
     
     /* lowercase the word */
     char lcase_word[LENGTH+1] = {'\0'}; int i = 0;
