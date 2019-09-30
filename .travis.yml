@@ -1,2 +1,2 @@
 language: c
-script: make test && ./test
+script: make get-deps && make test && ./test
