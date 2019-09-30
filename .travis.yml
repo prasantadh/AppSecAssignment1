@@ -1,3 +1,5 @@
 dist: bionic
 language: c
-script: make get-deps && make test && ./test
+script: 
+    - sudo apt update
+    - make get-deps && make test && ./test
