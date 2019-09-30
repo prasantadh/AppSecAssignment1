@@ -76,7 +76,7 @@ int check_words(FILE* fp, hashmap_t hashtable[], char* misspelled[]) {
 
 bool is_all_digits(const char* word) {
     int i = 0;
-    while(word[i]) {
+    while(word[i] != '\0') {
         if (word[i] < '0' || word[i] > '9')
             return false;
         ++i;
@@ -89,7 +89,7 @@ bool is_all_digits(const char* word) {
 bool check_word(const char* word, hashmap_t hashtable[]) {
     if (word == NULL || hashtable == NULL)      /* sanity check */
         err_and_exit("empty params to check_word");
-    if (!word[0]) return false;
+    if (!word[0] || isspace(word[0])) return false;
     // fprintf(stderr,"checking: %s:\t", word);
 
     // return all digits as a word
@@ -101,6 +101,8 @@ bool check_word(const char* word, hashmap_t hashtable[]) {
         lcase_word[i] = tolower(word[i]), ++i;
 
     int bucket = hash_function(lcase_word); /* pick a bucket */
+    if (bucket < 0) return false;
+
     node* cursor = hashtable[bucket];
     if (cursor == NULL) return false;
 
@@ -125,7 +127,7 @@ void add_word_to_table(char *word, hashmap_t* hashtable) {
         err_and_exit(strerror(errno));
 
     /* populate the new node */
-    char ch; int i = 0;
+    char ch = '\0'; int i = 0;
     while ((ch = word[i]) != '\0')
         node_p->word[i++] = ch;
     node_p->word[i] = '\0'; /* proper termination */
