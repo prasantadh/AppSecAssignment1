@@ -29,6 +29,10 @@ START_TEST(test_check_word_normal)
     ck_assert(!check_word("aquí", hashtable));
     // test case mangling is okay
     ck_assert(check_word("JuStiCE", hashtable));
+    ck_assert(!check_word("", hashtable));
+    ck_assert(check_word("K", hashtable));
+    // ck_assert(!check_word(NULL, hashtable));
+    // ck_assert(!check_word(correct_word, NULL));
     // Test here: What if a word begins and ends with "?
     /* this cannot be tested here because the parameter provided
      * is `const char *word` to check_word and removal of
