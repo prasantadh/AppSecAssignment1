@@ -7,12 +7,18 @@
 #define TESTDICT "test_worlist.txt"
 
 int
-main(void)
+main(int argc, char** argv)
 {
+    if (argc < 3) {
+        fprintf(stderr, "usage: ./a.out <input_file> <dictionary_file>\n");
+        exit(1);
+    } 
+    char *inputfile = argv[1];
+    char *dictionary = argv[2];
     hashmap_t hashtable[HASH_SIZE];
     char* misspelled[MAX_MISSPELLED];
-    load_dictionary(DICTIONARY, hashtable);
-    FILE* file_p = fopen(TESTDICT, "r");
+    load_dictionary(dictionary, hashtable);
+    FILE* file_p = fopen(inputfile, "r");
     if (file_p == NULL) {
         fprintf(stderr, "Couldn't open test file");
         exit(EXIT_FAILURE);
