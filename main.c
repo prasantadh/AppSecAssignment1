@@ -1,6 +1,7 @@
 #include <check.h>
 #include "dictionary.h"
 #include <stdlib.h>
+#include <string.h>
 
 #define DICTIONARY "wordlist.txt"
 #define TESTDICT "test_worlist.txt"
@@ -16,9 +17,24 @@ main(void)
         fprintf(stderr, "Couldn't open test file");
         exit(EXIT_FAILURE);
     }
-    fprintf(stderr, "got here for sure---!\n");
     int n = check_words(file_p, hashtable, misspelled);
-    fprintf(stderr, "got here for sure!\n");
+    free(misspelled[0]);
+    for (int i = 0; i < MAX_MISSPELLED; ++i) {
+        misspelled[i] = NULL;
+    }
+    for(int i = 0; i < HASH_SIZE; ++i) {
+        // printf("%d\n", i);
+        if (hashtable[i] == 0) continue;
+        node* head = hashtable[i];
+        node* temp = NULL;
+        while (head != NULL) {
+            temp = head->next;
+            free(head);
+            head = temp;
+        } 
+        head = NULL; temp = NULL;
+    }
+    fclose(file_p);
     printf("Done executing... %d misspelled\n", n);
 }
 

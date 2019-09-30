@@ -141,6 +141,8 @@ bool load_dictionary(const char* dictionary_file, hashmap_t hashtable[]) {
     FILE* file_p = fopen(dictionary_file, "r");
     if (file_p == NULL)
         err_and_exit(strerror(errno));
+    for (int i = 0; i < HASH_SIZE; ++i)
+        hashtable[i] = NULL;
     
     /* read and add word to dictionary */
     char ch; int i = 0; char word[LENGTH + 1] = {'\0'};
