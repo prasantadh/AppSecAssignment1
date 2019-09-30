@@ -5,22 +5,22 @@ get-deps:
 	sudo apt-get install -y build-essential check
 
 dictionary.o: dictionary.c dictionary.h
-	gcc -Wall -c $^
+	gcc --coverage -Wall -c $^
 
 spell.o: spell.c
-	gcc -Wall -c $^
+	gcc --coverage -Wall -c $^
 
 test_main.o: test_main.c
-	gcc -Wall -c $^ 
+	gcc --coverage -Wall -c $^ 
 
 main.o: main.c
-	gcc -Wall -c $^
+	gcc --coverage -Wall -c $^
 
 test: dictionary.o spell.o test_main.o
-	gcc -Wall $^ -lcheck -lm -lrt -lpthread -lsubunit -o test
+	gcc -ftest-coverage --coverage -Wall $^ -lcheck -lm -lrt -lpthread -lsubunit -o test
 
 main: dictionary.o spell.o main.o
-	gcc -Wall $^ -lcheck -lm -lrt -lpthread -lsubunit -o main
+	gcc --coverage -Wall $^ -lcheck -lm -lrt -lpthread -lsubunit -o main
 
 all: test main
 	./test
