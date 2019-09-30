@@ -54,7 +54,7 @@ void remove_surrounding_punctuation(char* word){
         --finish;
     }
     strncpy(word, word+start, finish - start);
-    word[finish] = '\0';
+    word[finish - start] = '\0';
 }
 
 int check_words(FILE* fp, hashmap_t hashtable[], char* misspelled[]) {
@@ -65,11 +65,12 @@ int check_words(FILE* fp, hashmap_t hashtable[], char* misspelled[]) {
         // fprintf(stderr, "hello hello: %s\n", word);
         remove_surrounding_punctuation(word);
         if (!check_word(word, hashtable) && num_misspelled < MAX_MISSPELLED) {
-            /* printf("didn't find: %s\n", word); */
+            // fprintf(stderr, "~> %s\n", word); 
             strncpy(misspelled[num_misspelled], word, LENGTH+1);
             ++num_misspelled;
         }
     }
+    // fprintf(stderr, "num_misspelled: %d\n", num_misspelled);
     return num_misspelled;
 }
 
@@ -78,6 +79,7 @@ bool check_word(const char* word, hashmap_t hashtable[]) {
     if (word == NULL || hashtable == NULL)      /* sanity check */
         err_and_exit("empty params to check_word");
     if (!word[0]) return false;
+    // fprintf(stderr,"checking: %s:\t", word);
     
     /* lowercase the word */
     char lcase_word[LENGTH+1] = {'\0'}; int i = 0;
@@ -90,7 +92,7 @@ bool check_word(const char* word, hashmap_t hashtable[]) {
 
     while (cursor != NULL) {    /* check the bucket */
         if (!strncmp(lcase_word, cursor->word, LENGTH)) {
-            /* printf("%s %s\n", lcase_word, cursor->word); */
+            // fprintf(stderr, "->%s %s\n", lcase_word, cursor->word);
             return true;
         }
         cursor = cursor->next;
