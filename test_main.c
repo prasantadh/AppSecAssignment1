@@ -27,6 +27,8 @@ START_TEST(test_check_word_normal)
     ck_assert(check_word("12345", hashtable));
     // do not crash on accent marks 
     ck_assert(!check_word("aquí", hashtable));
+    // test case mangling is okay
+    ck_assert(check_word("JuStiCE", hashtable));
     // Test here: What if a word begins and ends with "?
     /* this cannot be tested here because the parameter provided
      * is `const char *word` to check_word and removal of
