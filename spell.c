@@ -133,6 +133,7 @@ void add_word_to_table(char *word, hashmap_t* hashtable) {
 
     /* insert new node into hashtable */
     int bucket = hash_function(word);
+    if (bucket < 0) return;
     node_p->next = hashtable[bucket];
     hashtable[bucket] = node_p;
 }
@@ -147,6 +148,7 @@ bool load_dictionary(const char* dictionary_file, hashmap_t hashtable[]) {
     
     /* read and add word to dictionary */
     char ch; int i = 0; char word[LENGTH + 1] = {'\0'};
+    fprintf(stderr, "before loop\n");
     while ((ch = fgetc(file_p)) != EOF) {
         if (isspace(ch) && i == 0) continue;
         if (isspace(ch)) {
