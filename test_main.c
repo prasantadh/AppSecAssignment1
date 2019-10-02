@@ -32,6 +32,7 @@ START_TEST(test_check_word_normal)
     ck_assert(!check_word("", hashtable));
     ck_assert(check_word("K", hashtable));
     ck_assert(!check_word("    \t\t\t   \n\n\n \r\r\n ", hashtable));
+    ck_assert(!check_word("a\xb9\xb9\xb9\xb9\xb9\xb9ZZ", hashtable));
     // ck_assert(!check_word(NULL, hashtable));
     // ck_assert(!check_word(correct_word, NULL));
     // Test here: What if a word begins and ends with "?
