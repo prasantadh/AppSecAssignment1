@@ -52,7 +52,7 @@ void remove_surrounding_punctuation(char* word){
             break;
         --finish;
     }
-    strncpy(word, word+start, finish - start);
+    memmove(word, word+start, finish - start);
     word[finish - start] = '\0';
 }
 
