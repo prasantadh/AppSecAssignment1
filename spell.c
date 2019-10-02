@@ -28,9 +28,8 @@ bool getword(FILE* fp, char* word) {
             word[i] = '\0';
             return true;
         } else {
-            if (i == LENGTH + 1) continue;
+            if (i == LENGTH) continue;
             word[i++] = tolower(ch);
-            // if (i == LENGTH + 1) return true;
         }
     }
     return false;
